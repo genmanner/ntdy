@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.genmanner.partygm.core.framework.boottask.domain.TaskKind">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+
+	<resultMap id="BaseResultMap" type="com.genmanner.partygm.core.framework.boottask.domain.TaskKind">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="dispatchBeanName" property="dispatchBeanName" jdbcType="VARCHAR" />
+		<result column="taskBeanName" property="taskBeanName" jdbcType="VARCHAR" />
+		<result column="exceptionSolverBeanName" property="exceptionSolverBeanName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		t.id as id, 
+		t.dispatchBeanName as dispatchBeanName, 
+		t.taskBeanName as taskBeanName, 
+		t.exceptionSolverBeanName as exceptionSolverBeanName
+	</sql>
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="id != null"> and t.id = #{id}</if>
+				<if test="dispatchBeanName != null">and t.dispatchBeanName = #{dispatchBeanName}</if>
+				<if test="taskBeanName != null">and t.taskBeanName = #{taskBeanName}</if>
+				<if test="exceptionSolverBeanName != null">and t.exceptionSolverBeanName = #{exceptionSolverBeanName}</if>
+			</trim>
+		</where>
+		<if test="sorting != null">order by ${sorting}</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</sql>
+	
+	<!-- 查询总数 -->
+	<select id="countByExample" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from framework_taskkind t
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询 -->
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from framework_taskkind t
+		<include refid="Base_Where_Clause" />
+	</select>
+</mapper>

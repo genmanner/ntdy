@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.genmanner.partygm.core.framework.realtimecomm.domain.TaskStreamSend">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+	
+	<resultMap id="BaseResultMap" type="com.genmanner.partygm.core.framework.realtimecomm.domain.TaskStream">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="taskKindId" property="taskKindId" jdbcType="VARCHAR" />
+		<result column="taskStreamId" property="taskStreamId" jdbcType="INTEGER" />
+		<result column="params" property="params" jdbcType="CLOB" javaType = "java.lang.String"/>
+		<result column="status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		t.id as id, 
+		t.taskKindId as taskKindId, 
+		t.taskStreamId as taskStreamId, 
+		t.params as params, 
+		t.universityCode as universityCode, 
+		t.status as status
+	</sql>
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="id != null"> and t.id = #{id}</if>
+				<if test="taskKindId != null">and t.taskKindId = #{taskKindId}</if>
+				<if test="taskStreamId != null">and t.taskStreamId = #{taskStreamId}</if>
+				<if test="params != null">and t.params = #{params}</if>
+				<if test="universityCode != null">and t.universityCode = #{universityCode}</if>
+				<if test="status != null">and t.status = #{status}</if>
+			</trim>
+		</where>
+		<if test="sorting != null">order by ${sorting}</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</sql>
+	
+	<!-- 查询总数 -->
+	<select id="countByExample" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from framework_rt_taskstream_send t
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询 -->
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from framework_rt_taskstream_send t
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="insert" parameterType="com.genmanner.partygm.core.framework.realtimecomm.domain.TaskStream">
+		insert into framework_rt_taskstream_send (
+			id, 
+			addTime, 
+			lastUpdateTime, 
+			taskKindId, 
+			taskStreamId, 
+			params, 
+			universityCode, 
+			status
+		)
+		values (
+			#{id,jdbcType=VARCHAR}, 
+			#{addTime,jdbcType=VARCHAR}, 
+			#{lastUpdateTime,jdbcType=VARCHAR}, 
+			#{taskKindId,jdbcType=VARCHAR}, 
+			#{taskStreamId, jdbcType=INTEGER}, 
+			#{params, jdbcType=CLOB}, 
+			#{universityCode,jdbcType=VARCHAR}, 
+			#{status,jdbcType=VARCHAR}
+		)
+	</insert>
+</mapper>

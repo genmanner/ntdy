@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.genmanner.partygm.core.framework.boottask.domain.BootTimerTask">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" readOnly="true"/>
+
+	<resultMap id="BaseResultMap" type="com.genmanner.partygm.core.framework.boottask.domain.BootTimerTask">
+		<id column="taskName" property="taskName" jdbcType="VARCHAR" />
+		<result column="dispatchBeanName" property="dispatchBeanName" jdbcType="VARCHAR" />
+		<result column="taskBeanName" property="taskBeanName" jdbcType="VARCHAR" />
+		<result column="exceptionSolverBeanName" property="exceptionSolverBeanName" jdbcType="VARCHAR" />
+		<result column="period" property="period" jdbcType="INTEGER" />
+		<result column="enabled" property="enabled" jdbcType="BOOLEAN" />		
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		t.taskName as taskName, 
+		c.dispatchBeanName as dispatchBeanName, 
+		c.taskBeanName as taskBeanName, 
+		c.exceptionSolverBeanName as exceptionSolverBeanName, 
+		t.period as period,
+		t.enabled as enabled
+	</sql>
+	
+	<sql id="Base_Where_Clause">
+		<where>
+			<trim prefixOverrides="and">
+				<if test="taskName != null"> and t.taskName = #{taskName}</if>
+				<if test="dispatchBeanName != null">and c.dispatchBeanName = #{dispatchBeanName}</if>
+				<if test="taskBeanName != null">and c.taskBeanName = #{taskBeanName}</if>
+				<if test="exceptionSolverBeanName != null">and c.exceptionSolverBeanName = #{exceptionSolverBeanName}</if>
+				<if test="period != null">and t.period = #{period}</if>
+				<if test="enabled != null">and t.enabled = #{enabled}</if>
+			</trim>
+		</where>
+		<if test="sorting != null">order by ${sorting}</if>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</sql>
+	
+	<!-- 查询总数 -->
+	<select id="countByExample" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(id)
+		from framework_boottask t left join framework_taskkind c on t.taskKindId = c.id
+		<include refid="Base_Where_Clause" />
+	</select>
+	
+	<!-- 查询 -->
+	<select id="selectByExample" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+			<include refid="Base_Column_List" />
+		from framework_boottask t left join framework_taskkind c on t.taskKindId = c.id
+		<include refid="Base_Where_Clause" />
+	</select>
+</mapper>
